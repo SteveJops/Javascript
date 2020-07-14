@@ -22,6 +22,7 @@ let string = 'tseb eht ma i';
 let result = '';
 
 for (let i = string.length -1 ;i >= 0;i--){
+    // console.log(i)
     result += string.charAt(i);
 }
 console.log(result);
@@ -56,7 +57,7 @@ console.log(reslt);
 let arr = Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 for (let number of arr){
     if (number % 2 == 0) {continue;};
-        console.log(number)
+        console.log(number);
 }
 
 /* 6. Дан объект:

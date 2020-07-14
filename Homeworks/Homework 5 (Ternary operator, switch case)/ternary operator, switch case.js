@@ -51,5 +51,5 @@ let c = 0;
 //   c *= 10;
 // }
 
-c = c === 0 ? 1 : c < 0 ? 'less then zero': c *= 10;
+c = c === 0 ? 1 : c < 0 ? 'less then zero': c * 10;
 console.log(c);
