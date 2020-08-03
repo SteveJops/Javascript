@@ -134,3 +134,23 @@ let products = [
 
 filterCollection(products, 15, 30) → [{...price: 15}, {...price: 18.9}, {...price: 19}, {...price: 25}] */
 
+let products = [
+
+    {title: 'prod1', price: 5.2}, {title: 'prod2', price: 0.18},
+    
+    {title: 'prod3', price: 15}, {title: 'prod4', price: 25},
+    
+    {title: 'prod5', price: 18.9}, {title: 'prod6', price: 8},
+    
+    {title: 'prod7', price: 19}, {title: 'prod8', price: 63}
+    
+    ];
+
+
+    function getProductsFromPrice(products, min, max){
+        
+        let res = products.sort((prev, next) => prev.price - next.price);
+        let res1 = res.filter((number) => {return number.price >= min && number.price <= max})
+        return  res1;
+    }
+    console.log(getProductsFromPrice(products, 15, 63))
