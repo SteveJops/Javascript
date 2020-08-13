@@ -53,7 +53,7 @@ console.log(res1);
 Получить список всех ссылок, которые не находятся внутри списка ul. */
 
 const linksWhichDoesntContainInUl = [...document.links].filter(a => !a.closest("ul"));
-console.log(linksWhichDoesntContainInUl);
+console.log(linksWhichDoesntContainInUl)
 
 /* 4. Используя разметку из предыдущего задания.
 Найти элемент, который находится перед и после списка ul. */
