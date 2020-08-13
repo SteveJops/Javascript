@@ -90,4 +90,4 @@ const result = (function el() {
 
 
 console.log(result.elBeforeUl());
-console.log(result.elAfterUl());
+console.log(result.elAfterUl())
