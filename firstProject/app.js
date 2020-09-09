@@ -32,7 +32,7 @@ const tasks = [
 ];
 
 (function (arrOfTasks) {
-  const objOfTasks = arrOfTasks.redux((acc, task) => {
+  const objOfTasks = arrOfTasks.reduce((acc, task) => {
     acc[task._id] = task;
     return acc;
   }, {});
@@ -58,12 +58,12 @@ const tasks = [
       console.error("Give the tasks list");
       return;
     }
-
     const fragment = document.createDocumentFragment();
     Object.values(tasksList).forEach((task) => {
       const li = listItemTemplate(task);
       fragment.appendChild(li);
     });
+    listContainer.appendChild(fragment);
   }
 
   function listItemTemplate({ _id, title, body } = {}) {
@@ -84,6 +84,7 @@ const tasks = [
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.classList.add("btn", "btn-danger", "ml-auto", "delete-btn");
+
     const article = document.createElement("p");
     article.textContent = body;
     article.classList.add("mt-2", "w-100");
@@ -99,13 +100,16 @@ const tasks = [
     e.preventDefault();
     const titleValue = inputTitle.value;
     const bodyValue = inputBody.value;
+
     if (!titleValue || !bodyValue) {
       alert("Please entry title & body ");
       return;
     }
+
     const task = createNewTask(titleValue, bodyValue);
     const listItem = listItemTemplate(task);
     listContainer.insertAdjacentElement("afterbegin", listItem);
+    errorMessage();
     form.reset();
   }
 
@@ -139,6 +143,45 @@ const tasks = [
       const id = parent.dataset.taskId;
       const confirmed = deleteTask(id);
       deleteTaskFromHtml(confirmed, parent);
+      errorMessage();
     }
   }
+
+  /* 1. Если массив с задачами пустой то под формой нужно выводить сообщение об этом, 
+  также это же сообщение нужно выводить если вы удалите все задачи.*/
+
+  const textMessage = document.createElement("div");
+  textMessage.textContent = "There isn`t any tasks here!";
+  textMessage.classList.add(
+    "alert",
+    "alert-danger",
+    "text-center",
+    "display-3",
+    "d-none"
+  );
+
+  const emptyUl = document.querySelector(".list-group");
+  let needDiv = document.querySelector(".tasks-list-section .container");
+  needDiv.insertAdjacentElement("afterend", textMessage);
+
+  function errorMessage() {
+    if (
+      Array.from(emptyUl.children).length === 0 &&
+      textMessage.classList.contains("d-none")
+    ) {
+      textMessage.classList.remove("d-none");
+      textMessage.classList.add("d-block");
+    } else if (
+      Array.from(emptyUl.children).length != 0 &&
+      textMessage.classList.contains("d-block")
+    ) {
+      textMessage.classList.remove("d-block");
+      textMessage.classList.add("d-none");
+    }
+  }
+  errorMessage();
+
+  /* 2. В каждый элемент li добавить кнопку которая будет делать задачу выполненной. 
+  Завершенные задачи должны быть подсвечены любым цветом.
+   */
 })(tasks);
