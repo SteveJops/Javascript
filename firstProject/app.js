@@ -52,6 +52,7 @@ const tasks = [
 
   form.addEventListener("submit", onFormSubmitHandler);
   listContainer.addEventListener("click", onDeleteHandler);
+  listContainer.addEventListener("click", onCompleteTask);
 
   function renderAllTasks(tasksList) {
     if (!tasksList) {
@@ -66,7 +67,7 @@ const tasks = [
     listContainer.appendChild(fragment);
   }
 
-  function listItemTemplate({ _id, title, body } = {}) {
+  function listItemTemplate({ _id, title, body, completed } = {}) {
     const li = document.createElement("li");
     li.classList.add(
       "list-group-item",
@@ -85,6 +86,29 @@ const tasks = [
     deleteBtn.textContent = "Delete";
     deleteBtn.classList.add("btn", "btn-danger", "ml-auto", "delete-btn");
 
+    /* 2. В каждый элемент li добавить кнопку которая будет делать задачу выполненной. 
+  Завершенные задачи должны быть подсвечены любым цветом.
+   */
+
+    const completeTaskBtn = document.createElement("div");
+    completeTaskBtn.classList.add("custom-control", "custom-switch");
+
+    if (completed) {
+      completeTaskBtn.insertAdjacentHTML(
+        "beforeend",
+        `<input type="checkbox" class="custom-control-input" checked id="customSwitch${_id}">
+        <label class="custom-control-label" for="customSwitch${_id}">Complete Task</label>`
+      );
+      li.classList.add("bg-success");
+    } else {
+      completeTaskBtn.insertAdjacentHTML(
+        "beforeend",
+        `<input type="checkbox" class="custom-control-input" id="customSwitch${_id}">
+        <label class="custom-control-label" for="customSwitch${_id}">Complete Task</label>`
+      );
+      li.classList.add("bg-warning");
+    }
+
     const article = document.createElement("p");
     article.textContent = body;
     article.classList.add("mt-2", "w-100");
@@ -92,6 +116,7 @@ const tasks = [
     li.appendChild(span);
     li.appendChild(deleteBtn);
     li.appendChild(article);
+    li.appendChild(completeTaskBtn);
 
     return li;
   }
@@ -172,7 +197,7 @@ const tasks = [
       textMessage.classList.remove("d-none");
       textMessage.classList.add("d-block");
     } else if (
-      Array.from(emptyUl.children).length != 0 &&
+      Array.from(emptyUl.children).length !== 0 &&
       textMessage.classList.contains("d-block")
     ) {
       textMessage.classList.remove("d-block");
@@ -184,4 +209,73 @@ const tasks = [
   /* 2. В каждый элемент li добавить кнопку которая будет делать задачу выполненной. 
   Завершенные задачи должны быть подсвечены любым цветом.
    */
+
+  let showSort = false;
+
+  function onCompleteTask({ target }) {
+    if (target.classList.contains("custom-control-input")) {
+      const parent = target.closest("[data-task-id]");
+      const id = parent.dataset.taskId;
+
+      if (objOfTasks[id].completed === true) {
+        objOfTasks[id].completed = false;
+        if (parent.classList.contains("bg-success")) {
+          parent.classList.remove("bg-success");
+          parent.classList.add("bg-warning");
+        }
+      } else {
+        objOfTasks[id].completed = true;
+        if (showSort) {
+          completeTasks();
+        }
+        if (parent.classList.contains("bg-warning")) {
+          parent.classList.remove("bg-warning");
+          parent.classList.add("bg-success");
+        }
+      }
+    }
+  }
+
+  /*3. Добавить функционал отображения незавершенных задач и всех задач. т.е у вас будет две кнопки 
+  над таблицей 1-я "показать все задачи" и 2-я "показать незавершенные задачи", определить завершена задача 
+  или нет можно по полю completed в объекте задачи.  По умолчанию при загрузке отображаются все задачи.*/
+
+  const divWithBtns = document.createElement("div");
+
+  const allTasksBtn = document.createElement("button");
+  allTasksBtn.textContent = "Show Tasks";
+  allTasksBtn.classList.add("btn", "btn-info", "mt-2", "ml-4");
+
+  const allCompleteTasksBtn = document.createElement("button");
+  allCompleteTasksBtn.textContent = "Complete Tasks";
+  allCompleteTasksBtn.classList.add("btn", "btn-info", "mt-2", "ml-4");
+
+  divWithBtns.appendChild(allTasksBtn);
+  divWithBtns.appendChild(allCompleteTasksBtn);
+
+  let divWithCardClass = document.querySelector(".card");
+  divWithCardClass.insertAdjacentElement("afterend", divWithBtns);
+
+  const listWithItems = document.getElementsByTagName("ul");
+
+  allTasksBtn.addEventListener("click", (e) => {
+    let arrWithUlChildren = Array.from(listWithItems[0].children);
+    arrWithUlChildren.forEach((item) => {
+      item.classList.remove("d-none");
+    });
+    showSort = false;
+  });
+
+  allCompleteTasksBtn.addEventListener("click", completeTasks);
+
+  function completeTasks(e) {
+    let arrWithUlChildren = Array.from(listWithItems[0].children);
+    let showTasks = arrWithUlChildren.filter((item) => {
+      objOfTasks[item.dataset.taskId].completed === true;
+    });
+    showTasks.forEach((item) => {
+      item.classList.add("d-none");
+    });
+    showSort = true;
+  }
 })(tasks);
