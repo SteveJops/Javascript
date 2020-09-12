@@ -111,13 +111,13 @@ const tasks = [
   const listContainer = document.querySelector(
     ".tasks-list-section .list-group"
   );
-
   const form = document.forms["addTask"];
   const inputTitle = form.elements["title"];
   const inputBody = form.elements["body"];
   const themeSelect = document.getElementById("themeSelect");
 
   // Events
+  setTheme(lastSelectedTheme);
   renderAllTasks(objOfTasks);
 
   form.addEventListener("submit", onFormSubmitHandler);
