@@ -69,14 +69,14 @@ const newsService = (function () {
       );
     },
     everything(query, cb) {
-      http.get(`${apiUrl}/everything?$q={country}&apiKey=${apiKey}`, cb);
+      http.get(`${apiUrl}/everything?$q=${country}&apiKey=${apiKey}`, cb);
     },
   };
 })();
 
 // Elements
 
-const form = document.forms["newControls"];
+const form = document.forms["newsControls"];
 const countrySelect = form.elements["country"];
 const searchInput = form.elements["search"];
 
