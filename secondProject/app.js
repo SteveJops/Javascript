@@ -62,14 +62,14 @@ const newsService = (function () {
   const apiUrl = "https://news-api-v2.herokuapp.com";
 
   return {
-    topHeadlines(country = "ua", cb) {
+    topHeadlines(country = "ua", category = "general", cb) {
       http.get(
-        `${apiUrl}/top-headlines?country=${country}&category=technology&apiKey=${apiKey}`,
+        `${apiUrl}/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`,
         cb
       );
     },
     everything(query, cb) {
-      http.get(`${apiUrl}/everything?$q=${country}&apiKey=${apiKey}`, cb);
+      http.get(`${apiUrl}/everything?q=${query}&apiKey=${apiKey}`, cb);
     },
   };
 })();
@@ -79,6 +79,7 @@ const newsService = (function () {
 const form = document.forms["newsControls"];
 const countrySelect = form.elements["country"];
 const searchInput = form.elements["search"];
+const categorySelect = form.elements["category"];
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -97,9 +98,10 @@ function loadNews() {
   showLoader();
   const country = countrySelect.value;
   const searchText = searchInput.value;
+  const category = categorySelect.value;
 
   if (!searchText) {
-    newsService.topHeadlines(country, onGetResponse);
+    newsService.topHeadlines(country, category, onGetResponse);
   } else {
     newsService.everything(searchText, onGetResponse);
   }
@@ -117,6 +119,7 @@ function onGetResponse(err, res) {
 
   if (!res.articles.length) {
     // show empty message (Homework)
+    showMessage();
     return;
   }
   renderNews(res.articles);
@@ -154,7 +157,10 @@ function newsTemplate({ urlToImage, title, url, description }) {
         <div class='col s12'>
         <div class="card">
         <div class="card-image">
-        <img src="${urlToImage}">
+        <img src="${
+          urlToImage ||
+          "https://lh3.googleusercontent.com/proxy/7MHeZ19FKBcZ0EYHC1LWHTH8Zqy7Vq8y0eTCOcggLPfLsxqZfVX_kX-rvwCH6OKlcG_1Nx8KwBXkUndzPrDcx2y8EZOecRKaWIFsbn0"
+        }">
         <span class="card-title">${title || ""}</span>
         </div>
         <div class="card-content">
@@ -170,6 +176,10 @@ function newsTemplate({ urlToImage, title, url, description }) {
 
 function showAlert(msg, type = "success") {
   M.toast({ html: msg, classes: type });
+}
+
+function showMessage() {
+  M.toast({ html: "Any news didn`t found", classes: "rounded" });
 }
 
 // Show Loader  Function
