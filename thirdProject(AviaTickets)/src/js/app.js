@@ -1,12 +1,12 @@
 import "../css/style.css";
 import "./plugins";
 import locations from "./store/locations";
-import formUi from "./views/form";
 import formUI from "./views/form";
+import currencyUI from "./views/currency";
 
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
-  const form = formUi.form;
+  const form = formUI._form;
 
   //Events
   form.addEventListener("submit", (e) => {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Handlers
   async function initApp() {
     await locations.init();
-    formUi.setAutocompleteData(locations.shortCitiesList);
+    formUI.setAutocompleteData(locations.shortCitiesList);
   }
 
   async function onFormSubmit() {
@@ -25,5 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const destination = locations.getCityCodeByKey(formUI.destinationValue);
     const depart_date = formUI.departDateValue;
     const return_date = formUI.returnDateValue;
+    const currency = currencyUI.currencyValue;
+    await locations.fetchTickets({
+      origin,
+      destination,
+      depart_date,
+      return_date,
+      currency,
+    });
   }
 });
