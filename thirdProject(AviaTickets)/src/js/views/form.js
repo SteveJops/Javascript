@@ -5,7 +5,7 @@ import {
 
 class FormUI {
   constructor(autocompleteInstance, datePickerInstance) {
-    this._form = document.forms[".locationControls"];
+    this._form = document.forms["locationControls"];
     this.origin = document.getElementById("autocomplete-origin");
     this.destination = document.getElementById("autocomplete-destination");
     this.depart = document.getElementById("datepicker-depart");

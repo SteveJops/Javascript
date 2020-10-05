@@ -2,16 +2,49 @@ import "../css/style.css";
 import "./plugins";
 import locations from "./store/locations";
 import formUI from "./views/form";
+import ticketsUI from "./views/tickets";
 import currencyUI from "./views/currency";
+import favorites from "./store/favorites_tickets";
 
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
-  const form = formUI._form;
+  const form = formUI.form;
+  const tickets = document.querySelector(".tickets-sections");
+  const trigger = document.querySelector(".dropdown-trigger");
+  const dropdown = document.getElementById("dropdown1");
 
   //Events
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     onFormSubmit();
+  });
+
+  dropdown.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-favorite")) {
+      favorites.deleteFavoriteTickets(e.target);
+      let id = e.target.dataset.uniq;
+      delete favorites.favorites[id];
+      trigger.innerHTML = `Favorite - ${
+        Object.keys(favorites.favorites).length
+      }`;
+      let instance = M.Dropdown.getInstance(trigger);
+      instance.recalculateDimensions();
+    }
+  });
+
+  tickets.addEventListener("click", (e) => {
+    if (e.target.classList.contains("add-favorite")) {
+      let id = e.target.dataset.uniq;
+      let favorite_ticket = locations.getTicketByUniqueID(id);
+      if (favorites.favorites[id] === undefined) {
+        favorites.favorites[id] = favorite_ticket;
+        let ticketTemp = favorites.favoriteTicketsTemp(favorite_ticket);
+        dropdown.insertAdjacentHTML("afterbegin", ticketTemp);
+        trigger.innerHTML = `Favorite - ${
+          Object.keys(favorites.favorites).length
+        }`;
+      }
+    }
   });
 
   // Handlers
@@ -33,5 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return_date,
       currency,
     });
+    ticketsUI.renderTickets(locations.lastSearch);
   }
 });
