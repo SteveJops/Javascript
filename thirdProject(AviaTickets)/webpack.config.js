@@ -98,4 +98,10 @@ module.exports = {
    * npm install --save-dev clean-webpack-plugin */
   /** после установки клин плагина нужно его в этом файле импортировать
    *  и помимо добавить еще настройки(plugins, ) */
+
+  /** Еще один вариант билдить и деплоить через firebase.google.com + установить
+   * npm install -g firebase-tools
+   * после установки тулзов
+   * firebase login
+   */
 };
