@@ -4,6 +4,8 @@ import UI from "./config/ui.config";
 import { validate } from "./helpers/validate";
 import { showInputError, removeInputError } from "./views/form";
 import { login } from "./service/auth.service";
+import { notify } from "./views/notifications";
+import { getNews } from "./service/news.service";
 
 const { form, inputEmail, inputPassword } = UI;
 const inputs = [inputEmail, inputPassword];
@@ -32,9 +34,16 @@ async function onSubmit() {
   if (!isValidForm) return;
   try {
     await login(inputEmail.value, inputPassword.value);
+    await getNews();
     //show succes notify
+    notify({ msg: "Login success", className: "alert-success" });
   } catch (err) {
     //show error notify
+    notify({ msg: "Login failed", className: "alert-danger" });
   }
   form.reset();
 }
+
+// notify({ msg: "Some notification 1", className: "alert-danger" });
+// notify({ msg: "Some notification 2", className: "alert-warning" });
+// notify({ msg: "Some notification 3", className: "alert-primary" });
